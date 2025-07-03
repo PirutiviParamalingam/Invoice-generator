@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Invoice</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        margin: 5px;
+      }
+
+      .text-success {
+        color: green;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      table th,
+      table td {
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        border-left: none;
+        border-right: none;
+        padding: 8px;
+      }
+
+      hr {
+        border: 1px solid #000;
+        margin: 20px 0;
+      }
+
+      .note {
+        margin-top: 30px;
+      }
+
+      .note p {
+        margin: 5px 0;
+      }
+
+      h3,
+      h4,
+      h5 {
+        margin-bottom: 20px;
+      }
+
+      .header-section {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+
+      .header-box {
+        flex: 1;
+        min-width: 250px;
+        padding: 10px;
+      }
+
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        margin-top: 20px;
+      }
+
+      .invoice-meta {
+        text-align: right;
+        font-size: 14px;
+        min-width: 200px;
+      }
+
+      @media (max-width: 768px) {
+        .invoice-meta {
+          text-align: left;
+          margin-top: 10px;
+        }
+
+        .top-row {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <div>
+      <img
+        src="static/bitsmart.svg"
+        alt="BITSmart Logo"
+        style="width: 200px; height: auto; display: block; margin-bottom: 10px"
+      />
+      <h3 class="text-success">FOR ALL THINGS TECH</h3>
+      <p>
+        Visit: <a href="https://bits-mart.com">bits-mart.com</a><br />
+        Phone: +61 434 492 859
+      </p>
+    </div>
+
+    <!-- Invoice Title & Metadata -->
+    <div class="top-row">
+      <div>
+        <h3 style="margin-bottom: 0">Tax Invoice</h3>
+      </div>
+      <div class="invoice-meta">
+        <strong>Invoice Number:</strong> {{ invoice_number }}<br />
+        Invoice Date: {{ invoice_date }}
+      </div>
+    </div>
+
+    <!-- Three Column Info: From, Bill to, Ship to -->
+    <div class="header-section">
+      <div class="header-box" style="margin-left: -10px">
+        <h4>From</h4>
+        <p style="font-size: 10px">
+          {{ from_address | join('<br />') | safe }}
+        </p>
+      </div>
+      <div class="header-box" style="margin-left: 20px">
+        <h4>Bill to</h4>
+        <p style="font-size: 10px">
+          {{ bill_to.name }}<br />
+          {{ bill_to.address | join('<br />') | safe }}
+        </p>
+      </div>
+      <div class="header-box">
+        <h4>Ship to</h4>
+        <p style="font-size: 10px">
+          {{ ship_to.name }}<br />
+          {{ ship_to.address | join('<br />') | safe }}
+        </p>
+      </div>
+    </div>
+
+    <hr />
+
+    <!-- Order Details -->
+    <h5>Order Details</h5>
+    <table>
+      <thead>
+        <tr>
+          <th>Qty</th>
+          <th>Item</th>
+          <th></th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.qty }}</td>
+          <td>{{ item.item }}</td>
+          <td></td>
+          <td>${{ "%.2f"|format(item.price) }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+          <td></td>
+          <td></td>
+          <td>Subtotal</td>
+          <td>${{ "%.2f"|format(subtotal) }}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>Tax</td>
+          <td>${{ "%.2f"|format(tax) }}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>Shipping</td>
+          <td>${{ "%.2f"|format(shipping) }}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td><strong>Total</strong></td>
+          <td><strong>${{ "%.2f"|format(total) }}</strong></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>Total Paid</td>
+          <td>${{ "%.2f"|format(total_paid) }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Footer -->
+    <div class="note">
+      <strong>Note</strong><br /><br />
+      {{ note }}<br /><br />
+      <p>
+        If you have any questions, please email:
+        <a href="mailto:accounts@bits-mart.com">accounts@bits-mart.com</a>
+      </p>
+    </div>
+  </body>
+</html>
